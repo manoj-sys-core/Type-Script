@@ -10,14 +10,10 @@ enum weekdays {
     day4 ="thrusday",
     day5 ="friday",
 }
-let today:weekdays = weekdays.day1;
-console.log(today)
+let day1:weekdays = weekdays.day1;
+console.log(day1)
 // 4
-let hello:(name:string) =>void = (name)=>{
+let hel:(name:string) =>void = (name)=>{
     console.log("welcome "+name)
 }
-hello("manoj")
-// 5
-let typ:unknown="ts";
-typ = 9;
-console.log(typeof typ)
+hel("manoj")
