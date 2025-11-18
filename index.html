@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Explorer’s Haven</title>
+
+<style>
+  /* ---------- GLOBAL ---------- */
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(135deg, #74ABE2, #5563DE);
+    min-height: 100vh;
+    color: #fff;
+  }
+
+  /* ---------- CONTAINER ---------- */
+  .container {
+    width: 90%;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 2.6rem;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  /* ---------- CARD STYLING ---------- */
+  .card {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 25px;
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+
+  .card h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+  }
+
+  .advice {
+    margin-top: 8px;
+    font-size: 1.15rem;
+    color: #E3FFCE;
+    font-weight: 500;
+  }
+
+  /* ---------- NEWS LIST ---------- */
+  ul {
+    padding-left: 18px;
+  }
+
+  ul li {
+    margin-bottom: 6px;
+  }
+
+  ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    transition: 0.2s;
+  }
+
+  ul li a:hover {
+    color: #E8FF7A;
+    text-decoration: underline;
+  }
+
+  /* ---------- RESPONSIVE GRID ---------- */
+  @media (min-width: 768px) {
+    .container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .container h1 {
+      grid-column: span 2;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Explorer’s Haven</h1>
+
+  <!-- Weather Card -->
+  <div class="card">
+    <h2>Weather</h2>
+    <div id="weather">Loading...</div>
+    <div id="advice" class="advice"></div>
+  </div>
+
+  <!-- News Card -->
+  <div class="card">
+    <h2>Top News</h2>
+    <ul id="news">
+      <li>Loading...</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  // Fetch Weather
+  async function getWeather() {
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=28.6&longitude=77.2&current_weather=true";
+    const res = await fetch(url);
+    const data = await res.json();
+    let w = data.current_weather;
+
+    document.getElementById("weather").innerText =
+      `Temp: ${w.temperature}°C | Wind: ${w.windspeed} m/s | Code: ${w.weathercode}`;
+
+    let c = w.weathercode;
+    let msg = (c <= 3) ? "☀️ Sunny day — wear a hat!"
+            : (c >= 51 && c <= 67) || c >= 95 ? "🌧️ Rainy — carry an umbrella!"
+            : "🌤️ Weather is normal today.";
+
+    document.getElementById("advice").innerText = msg;
+  }
+
+  // Fetch News
+  async function getNews() {
+    const key = "pub_9a935879ffa840afafbc9ba2c993daa9";
+    const url = `https://newsdata.io/api/1/latest?apikey=${key}&country=us`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const ul = document.getElementById("news");
+    ul.innerHTML = "";
+
+    (data.results || []).slice(0, 5).forEach(n => {
+      ul.innerHTML += `<li><a href="${n.link}" target="_blank">${n.title}</a></li>`;
+    });
+  }
+
+  getWeather();
+  getNews();
+</script>
+
+</body>
+</html>
